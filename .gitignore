@@ -1,0 +1,5 @@
+.env
+.env.*
+.private/
+.vercel/
+index.original.html
