@@ -14,6 +14,69 @@ header{height:74px}.wordmark{font-weight:800;color:var(--adv-red)}.cover{min-hei
 @media(max-width:640px){header{height:58px}.cover{padding:24px 0 25px;min-height:0;grid-template-columns:1fr;gap:13px}.cover h1{font-size:clamp(44px,11vw,66px)}.cover .dedication{margin-top:16px;font-size:1.08rem}.cover .primary{margin-top:14px}.adv-cover-art{max-height:194px}.adv-route{min-width:630px;min-height:183px;padding-top:9px}.adv-heading{align-items:center}.adv-heading .adv-eyebrow{font-size:.73rem}.adv-score{gap:5px;padding:5px 7px;font-size:.8rem}.adv-score svg{width:17px}.adv-instructions{font-size:.89rem}.adv-stop>svg{width:74px}.adv-sign strong{font-size:1.09rem}.adv-sign{font-size:.77rem}.adv{margin-bottom:26px}}
 @media(prefers-reduced-motion:reduce){.adv-stop>svg{transition:none}.adv-world{scroll-behavior:auto}}
 .adv-candle svg{display:block;margin:0 auto 4px}.adv-candle span{font-size:inherit}.adv-flame{opacity:0}.adv-candle.is-lit .adv-flame{opacity:1}
+
+#album .photos {
+  display: block;
+  columns: 2;
+  column-gap: clamp(24px, 5vw, 76px);
+  max-width: 1000px;
+  margin: 28px auto 0;
+  padding: 18px clamp(12px, 4vw, 48px) 6px;
+}
+#album .photo {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+  break-inside: avoid;
+  margin: 0 0 clamp(24px, 4vw, 52px);
+  padding: 10px 10px 0;
+  background: #fff9e9;
+  border: 2px solid #d2bf96;
+  border-radius: 4px 7px 6px 3px;
+  rotate: -1.5deg;
+}
+#album .photo:nth-child(even) { rotate: 1.5deg; }
+#album .photo::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 33%;
+  z-index: 1;
+  width: 34%;
+  height: 22px;
+  background: #e7cb85d9;
+  clip-path: polygon(0 10%,98% 0,96% 35%,100% 51%,96% 72%,99% 100%,0 91%,4% 68%,1% 47%,4% 26%);
+  rotate: -5deg;
+  pointer-events: none;
+}
+#album .photo:nth-child(even)::before { background: #d5a996d9; rotate: 5deg; }
+#album .photo::after {
+  content: "";
+  position: absolute;
+  top: 17%;
+  right: -23px;
+  width: 37px;
+  height: 49px;
+  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 52'%3E%3Cpath d='M19 2q0 16 15 17-16 1-16 17 0-16-15-18Q17 17 19 2Zm14 31 1 17m-9-8 16-1' fill='none' stroke='%23a65a48' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+#album .photo:nth-child(even)::after {
+  top: auto;
+  right: auto;
+  bottom: 21%;
+  left: -24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 52'%3E%3Cpath d='M29 5C8 4 1 21 8 34c5 9 18 10 20 0 2-8-8-9-10-3-3 8 8 15 18 11M22 1l7 4-4 7' fill='none' stroke='%23798659' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+#album .photo-open { background: #f3e8cf; border-radius: 2px; }
+#album .photo img { width: 100%; height: auto; aspect-ratio: auto; max-height: 540px; object-fit: contain; }
+#album .photo figcaption { background: transparent; padding: 10px 4px 12px; overflow-wrap: anywhere; }
+@media (max-width: 580px) {
+  #album .photos { columns: 1; padding-inline: 18px; max-width: 420px; }
+  #album .photo { margin-bottom: 29px; }
+  #album .photo::after { width: 28px; right: -17px; }
+  #album .photo:nth-child(even)::after { left: -17px; }
+}
 </style></head>
 <body>
 <header><a class="wordmark" href="#">给冰激凌的一份偏爱</a><button class="text-button" id="edit-open">定制这份礼物 ↗</button></header>
@@ -69,7 +132,7 @@ header{height:74px}.wordmark{font-weight:800;color:var(--adv-red)}.cover{min-hei
 <div class="book" id="gift" hidden>
 <a class="text-button" href="#adventure">← 返回探险地图</a>
  <nav class="tabs" aria-label="纪念册内容" role="tablist"><button role="tab" aria-selected="true" aria-controls="album" id="tab-album" tabindex="0" data-tab="album">相片集 <span>↗</span></button><button role="tab" aria-selected="false" aria-controls="quotes" id="tab-quotes" tabindex="-1" data-tab="quotes">语录集 <span>↗</span></button><button role="tab" aria-selected="false" aria-controls="chat" id="tab-chat" tabindex="-1" data-tab="chat">聊聊天 <span>↗</span></button><button role="tab" aria-selected="false" aria-controls="heart" id="tab-heart" tabindex="-1" data-tab="heart">心动代码 <span>↗</span></button></nav>
- <section id="album" class="panel album" role="tabpanel" aria-labelledby="tab-album"><div class="section-top"><div><h2>把日子，收进相册。</h2><p>以后还要一起拍好多好多张。</p></div><label class="button dark" for="photo-input">加入我们的照片 ＋</label><input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple hidden></div><p class="small" id="photo-note">先用四张风景样片，等你把我们的故事放进来。</p><div id="photos" class="photos"></div><div class="album-bottom"><p>一起发呆、一起出发，<br>普通的日子也值得被记住。</p><span class="large-sign">To be continued.</span></div><details class="credits"><summary>样片摄影与来源</summary><p>风景样片经 Lorem Picsum 提供，摄影遵循 <a href="https://unsplash.com/license" target="_blank" rel="noreferrer">Unsplash 许可</a>。<a href="https://unsplash.com/photos/-oWyJoSqBRM" target="_blank" rel="noreferrer">Alexey Topolyanskiy</a> · <a href="https://unsplash.com/photos/_h7aBovKia4" target="_blank" rel="noreferrer">Philippe Wuyts</a> · <a href="https://unsplash.com/photos/Kt5hRENuotI" target="_blank" rel="noreferrer">Andrew Ridley</a> · <a href="https://unsplash.com/photos/bClr95glx6k" target="_blank" rel="noreferrer">Vashishtha Jogi</a></p></details></section>
+ <section id="album" class="panel album" role="tabpanel" aria-labelledby="tab-album"><div class="section-top"><div><h2>把日子，收进相册。</h2><p>以后还要一起拍好多好多张。</p></div><label class="button dark" for="photo-input">加入我们的照片 ＋</label><input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple hidden></div><p class="small" id="photo-note">先用四张风景样片，等你把我们的故事放进来。</p><div id="photos" class="photos"></div><div class="album-bottom"><p>一起发呆、一起出发，<br>普通的日子也值得被记住。</p><span class="large-sign">To be continued.</span></div></section>
  <section id="quotes" class="panel quotes" role="tabpanel" aria-labelledby="tab-quotes" hidden><div class="section-top"><div><h2>有些话，想送给你。</h2><p>生日那天说一遍，平常的日子也算数。</p></div><button class="button dark" id="quote-next">再抽一句 ↻</button></div><div class="quote-stage"><p class="quote-big" id="featured-quote">我要和你做一辈子的闺蜜。</p><p>写给 <span data-name>冰激凌</span></p></div><div class="quote-slips" id="quote-slips"></div><p class="small">这里先放了几句生日祝福，可以在“定制这份礼物”里换成你们自己的语录。</p></section>
  <section id="chat" class="panel chat" role="tabpanel" aria-labelledby="tab-chat" hidden><div class="chat-intro"><h2>今天，想聊点什么？</h2><p>快乐可以加倍，烦恼也可以放一放。</p><p class="small">这是送给你的 AI 聊天角落。它不会代替我，但可以陪你聊一会儿。</p><button class="text-button" id="clear-chat">清空这一段对话 ↗</button></div><div class="chat-box" data-ui><div class="chat-log" id="chat-log" role="log" aria-live="polite"><div class="bubble assistant">嗨，冰激凌！这里是你的生日聊天角落。今天想许个愿，还是聊聊最近的事？</div></div><div class="suggestions"><button>陪我许个生日愿望</button><button>今天有一点不开心</button></div><form id="chat-form"><label class="sr-only" for="chat-input">想说的话</label><textarea id="chat-input" placeholder="把想说的话写在这里…" maxlength="2000" rows="2" required></textarea><button class="button dark" id="send-chat" type="submit">发送 ↗</button></form><p class="small chat-status" id="chat-status" role="status">正在检查聊天连接…</p><p class="small">发送的文字会交给 DeepSeek 生成回复。聊天只保留在当前页面，刷新后清空。</p></div></section>
  <section id="heart" class="panel heart-panel" role="tabpanel" aria-labelledby="tab-heart" hidden><div class="heart-intro"><h2>偏爱，一直运行。</h2><p>把一辈子写进循环里。<br>每次心动，都是同一个答案。</p><button class="button dark" id="heart-toggle" aria-pressed="false">暂停心跳</button><p id="heart-counter" class="small" aria-live="off">心动计数：0</p></div><div class="heart-canvas"><pre id="code-heart" aria-label="由代码字符组成的跳动爱心"></pre><p data-message>我要和你做一辈子的闺蜜。</p></div><pre class="love-code"><code>const bestie = "冰激凌";
