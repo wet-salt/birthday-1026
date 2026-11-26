@@ -3,6 +3,8 @@
   const offline = document.getElementById('gift-data').hasAttribute('data-exported');
   let latest = initial;
   let busy = false;
+  let editingVersion = initial.contentVersion;
+  const pendingUnlocks = new Set();
   let serial = Promise.resolve();
   const $ = id => document.getElementById(id);
   function status(message) { const element = $('cloud-status'); if (element) element.textContent = message; }
@@ -58,17 +60,28 @@
   }
   window.BirthdayCloud = {
     get data() { return latest; },
+    beginEdit() { editingVersion = latest.contentVersion; },
     async saveContent(content) {
-      try { await mutate({action:'content.save',content,version:latest.contentVersion}); return true; }
+      try { await mutate({action:'content.save',content,version:editingVersion}); editingVersion = latest.contentVersion; return true; }
       catch { return false; }
     },
     async unlock(level) {
       if (latest.role === 'owner' || latest.progress.includes(level)) return;
-      try { await mutate({action:'progress.unlock',level}); }
+      pendingUnlocks.add(level);
+      try {
+        await mutate({action:'progress.unlock',level});
+        pendingUnlocks.delete(level);
+        if (!pendingUnlocks.size) $('cloud-retry').hidden = true;
+      }
       catch (error) {
         status('通关成功，但进度尚未同步。联网后点“重试同步”。');
         const retry = $('cloud-retry'); retry.hidden = false;
-        retry.onclick = async () => { retry.disabled = true; await window.BirthdayCloud.unlock(level); retry.disabled = false; if (latest.progress.includes(level)) retry.hidden = true; };
+        retry.onclick = async () => {
+          retry.disabled = true;
+          for (const pending of [...pendingUnlocks]) await window.BirthdayCloud.unlock(pending);
+          retry.disabled = false;
+          retry.hidden = !pendingUnlocks.size;
+        };
       }
     },
     caption:async (id,caption) => mutate({action:'photo.caption',id,caption}),

@@ -17,7 +17,7 @@ app = replace(app,"async function save(){if(!db)","async function save(){if(!win
 app = replace(app,"state.photos.some(p=>p.sample)?'风景样片 · 加入你们的照片后，故事就从这里开始。':",'');
 app = replace(app,"p.caption=value.trim().slice(0,80)||'我们的某一天';renderPhotos();await save();", "if(!window.BirthdayCloud.offline){try{await window.BirthdayCloud.caption(p.id,value);}catch(error){toast(error.message);}return;}p.caption=value.trim().slice(0,80)||'我们的某一天';renderPhotos();await save();");
 app = replace(app,'state.photos.splice(i,1);renderPhotos();await save();',"if(!window.BirthdayCloud.offline){try{await window.BirthdayCloud.remove(p.id);}catch(error){toast(error.message);}return;}state.photos.splice(i,1);renderPhotos();await save();");
-app = replace(app,"$('#edit-open').onclick=()=>{", "$('#edit-open').onclick=()=>{if(!window.BirthdayCloud.offline&&window.BirthdayCloud.data.role!=='owner')return;");
+app = replace(app,"$('#edit-open').onclick=()=>{", "$('#edit-open').onclick=()=>{if(!window.BirthdayCloud.offline&&window.BirthdayCloud.data.role!=='owner')return;window.BirthdayCloud.beginEdit();");
 app = replace(app,"ok?'已保存在这台设备。下载纪念册可带走这些内容。':'已修改。请下载纪念册保存这些内容。'", "ok?'已保存，另一台设备刷新即可看到。':'尚未保存到云端。请查看页面同步提示后重试。'");
 app = replace(app,"return canvas.toDataURL('image/jpeg',.84);", "let result=canvas.toDataURL('image/jpeg',.78);if(result.length>1300000){const smaller=document.createElement('canvas');smaller.width=Math.round(canvas.width*.65);smaller.height=Math.round(canvas.height*.65);smaller.getContext('2d').drawImage(canvas,0,0,smaller.width,smaller.height);result=smaller.toDataURL('image/jpeg',.65);}return result;");
 app = replace(app,'length>=24','length>=100');
