@@ -1,3 +1,4 @@
+import {session} from '../lib/auth.mjs';
 const windows = new Map();
 const allowedPage = 'https://wet-salt.github.io';
 function headers(req,res){
@@ -16,6 +17,7 @@ export default async function handler(req,res){
  if(!headers(req,res))return send(res,403,{error:'请求来源不匹配。'});
  if(req.method==='OPTIONS'){res.statusCode=204;return res.end();}
  if(req.method!=='POST')return send(res,405,{error:'请使用 POST 请求。'});
+ if(!session(req))return send(res,401,{error:'请先输入访问码。'});
  const key=process.env.DEEPSEEK_API_KEY;
  if(!key)return send(res,503,{error:'聊天服务尚未配置完成。'});
  const now=Date.now();

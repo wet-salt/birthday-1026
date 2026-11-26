@@ -1,0 +1,14 @@
+{
+  "name": "icecream-birthday",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.9.0"
+  },
+  "overrides": {
+    "zod": "^4.6.7"
+  }
+}

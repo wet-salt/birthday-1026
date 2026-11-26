@@ -1,5 +1,4 @@
-.env
-.env.*
-.private/
+.env*
+node_modules/
 .vercel/
-index.original.html
+.private/

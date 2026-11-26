@@ -1,5 +1,1 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "functions": { "api/chat.mjs": { "maxDuration": 45 } }
-}
+{"framework":null,"outputDirectory":"public","buildCommand":"npm run build","functions":{"api/page.mjs":{"includeFiles":"private/**"},"api/chat.mjs":{"maxDuration":45},"api/sync.mjs":{"maxDuration":30}},"rewrites":[{"source":"/","destination":"/api/page"},{"source":"/index.html","destination":"/api/page"}]}
