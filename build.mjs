@@ -6,6 +6,7 @@ await mkdir(new URL('public',root),{recursive:true});
 // The prepared template travels with the deployment, so builds do not need the old workspace.
 const source = await readFile(new URL('private/source.html',root),'utf8');
 const cloud = await readFile(new URL('cloud.js',root),'utf8');
+const photos = await readFile(new URL('photos.js',root),'utf8');
 const replace = (input, from, to) => { if (!input.includes(from)) throw Error('Template changed: ' + from.slice(0,65)); return input.replace(from,()=>to); };
 let html = source;
 html = html.replace(/<script\b[^>]*>window\.GIFT_BUNDLE=[^]*?<\/script>/,'');
@@ -29,7 +30,7 @@ const initEnd = app.indexOf('render();updateHeart();checkChat();',initStart);
 if (initStart < 0 || initEnd < 0) throw Error('Missing initialization');
 app = app.slice(0,initStart) + ` window.birthdayContent={apply(data){state={...state,...data};render();}};
  async function init(){if(!window.BirthdayCloud.offline){state={...defaults,...window.BirthdayCloud.data};}else{try{db=await openDB();}catch{}}` + app.slice(initEnd);
-html = html.replace(match[0],()=>`<script>${cloud.replace(/<\/script/gi,'<\\/script')}</script><script>${app.replace(/<\/script/gi,'<\\/script')}</script>`);
+html = html.replace(match[0],()=>`<script>${cloud.replace(/<\/script/gi,'<\\/script')}</script><script>${photos.replace(/<\/script/gi,'<\\/script')}</script><script>${app.replace(/<\/script/gi,'<\\/script')}</script><script>window.BirthdayPhotos.install();</script>`);
 
 const adventureMatch = html.match(/<script id="adv-script">([^]*?)<\/script>/);
 let adventure = adventureMatch[1];
@@ -50,6 +51,7 @@ html = html.replace(/<p class="small">信件保存在当前浏览器。[^]*?<\/p
 html = html.replace(/<p class="small">照片与文字保存在这台设备的浏览器中。[^]*?<\/p>/,'<p class="small">照片由你们共同管理。只有主人管理码可以修改这份礼物的文字。</p>');
 html = html.replace('</header>',`</header><aside id="cloud-bar"><div><strong id="cloud-role"></strong><p id="cloud-status" role="status">照片与进度已从云端读取</p></div><div><button id="cloud-practice" type="button" hidden>试玩关卡</button><button id="cloud-retry" hidden type="button">重试同步</button><button id="cloud-refresh" type="button">刷新同步</button><button id="cloud-logout" type="button">退出</button></div></aside><dialog id="cloud-practice-dialog"><div class="dialog-top"><h2>先替她试玩一下</h2><button class="text-button" id="cloud-practice-close" type="button">关闭</button></div><p>试玩不会推进她的闯关进度。</p><div class="cloud-practice-options"><button class="button" type="button" data-practice="album">翻牌 · 照相馆</button><button class="button" type="button" data-practice="quotes">拼图 · 图书馆</button><button class="button" type="button" data-practice="chat">寄信 · 邮局</button><button class="button" type="button" data-practice="heart">点蜡烛 · 蛋糕屋</button></div></dialog>`);
 html = replace(html,'<div id="photos" class="photos">','<details id="cloud-trash-details" hidden><summary>照片回收站</summary><div id="cloud-trash"></div></details><div id="photos" class="photos">');
+html = replace(html,'<details id="cloud-trash-details"', '<p id="photo-capacity" class="small"></p><p id="photo-upload-status" class="small" role="status"></p><ul id="photo-upload-failures" class="small"></ul><button id="photo-upload-retry" class="text-button" type="button" hidden>重试未保存的照片</button><details id="cloud-trash-details"');
 html = replace(html,'</head>',`<style>#cloud-bar{max-width:1360px;margin:0 auto 24px;padding:16px 24px;background:var(--paper);display:flex;align-items:center;justify-content:space-between;gap:16px}#cloud-bar p{font-size:14px;margin:4px 0 0}#cloud-bar button{background:transparent;text-decoration:underline;margin:0 0 0 16px;padding:8px 0;font-size:14px}#cloud-trash-details{margin-top:24px;font-size:15px}#cloud-trash>div{display:flex;justify-content:space-between;gap:16px}#edit-open[hidden]{display:none}#cloud-retry[hidden]{display:none}@media(max-width:560px){#cloud-bar{margin:0 16px 20px;padding:16px;align-items:flex-start;flex-direction:column}#cloud-bar button{margin:0 20px 0 0}}</style><script>window.BIRTHDAY_INITIAL=__BIRTHDAY_INITIAL__;</script></head>`);
 // Clear the built-in sample images so no personal photo bytes travel in public source.
 html = html.replace(/<div id="photos" class="photos">[^]*?<\/div>(?=\s*<div class="album-bottom")/,'<div id="photos" class="photos"></div>');

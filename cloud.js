@@ -21,6 +21,7 @@
     window.birthdayAdventure?.applyCloud(data.progress, data.role === 'owner');
     window.birthdayLetter?.applyCloud(data.progress.includes('letter'), data.role === 'owner');
     renderTrash();
+    window.BirthdayPhotos?.capacity();
   }
   function mutate(body) {
     const task = serial.then(async () => {
@@ -86,7 +87,7 @@
     },
     caption:async (id,caption) => mutate({action:'photo.caption',id,caption}),
     remove:async id => mutate({action:'photo.remove',id}),
-    add:async (src,caption) => mutate({action:'photo.add',id:crypto.randomUUID(),src,caption}),
+    add:async (src,caption,id=crypto.randomUUID()) => mutate({action:'photo.add',id,src,caption}),
     offline,
   };
   document.addEventListener('DOMContentLoaded', () => {
