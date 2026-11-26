@@ -57,6 +57,13 @@ html = replace(html,'</body>', `<dialog id="photo-caption-dialog" aria-labelledb
 html = replace(html,'</head>',`<style>#cloud-bar{max-width:1360px;margin:0 auto 24px;padding:16px 24px;background:var(--paper);display:flex;align-items:center;justify-content:space-between;gap:16px}#cloud-bar p{font-size:14px;margin:4px 0 0}#cloud-bar button{background:transparent;text-decoration:underline;margin:0 0 0 16px;padding:8px 0;font-size:14px}#cloud-trash-details{margin-top:24px;font-size:15px}#cloud-trash>div{display:flex;justify-content:space-between;gap:16px}#edit-open[hidden]{display:none}#cloud-retry[hidden]{display:none}@media(max-width:560px){#cloud-bar{margin:0 16px 20px;padding:16px;align-items:flex-start;flex-direction:column}#cloud-bar button{margin:0 20px 0 0}}</style><script>window.BIRTHDAY_INITIAL=__BIRTHDAY_INITIAL__;</script></head>`);
 // Clear the built-in sample images so no personal photo bytes travel in public source.
 html = html.replace(/<div id="photos" class="photos">[^]*?<\/div>(?=\s*<div class="album-bottom")/,'<div id="photos" class="photos"></div>');
+html = html.replaceAll('10.26','11.26').replaceAll('10 月 26 日','11 月 26 日').replaceAll('10月26日','11月26日').replaceAll('BIRTHDAY QUEST','FRIENDSHIP DAY');
+html = replace(html,'<h1>生日快乐，<br><span data-name>冰激凌</span>。</h1>','<h1>友谊纪念日<br><span class="anniversary-pair">雨逢林 × <span data-name>冰激凌</span></span></h1>');
+html = html.replaceAll('生日','友谊纪念日');
+html = html.replace('document.title=`11.26 · 友谊纪念日快乐，${state.name}`;', 'document.title=`11.26 · 雨逢林与${state.name}的友谊纪念日`;');
+html = html.replaceAll('冰激凌的友谊纪念日探险','雨逢林与冰激凌的友谊纪念日探险');
+html = html.replaceAll('陪我许个友谊纪念日愿望','聊聊我们的友谊');
+html = html.replace('</head>','<style>.anniversary-pair{display:block;font-size:clamp(24px,3.2vw,40px);line-height:1.5;letter-spacing:0;margin-top:16px}</style></head>');
 for (const script of html.matchAll(/<script\b([^>]*)>([^]*?)<\/script>/gi)) {
   if(script[2].includes('__BIRTHDAY_INITIAL__'))continue;
   if(script[1].includes('application/json'))JSON.parse(script[2]);else new vm.Script(script[2]);
