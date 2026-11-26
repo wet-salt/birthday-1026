@@ -3,6 +3,7 @@
   const $ = id => document.getElementById(id);
   let failed = [];
   let uploading = false;
+  let editingPhoto = null;
   function capacity() {
     const data = window.BirthdayCloud.data;
     const active = data.photos.length;
@@ -91,12 +92,33 @@
   }
   window.BirthdayPhotos = {
     capacity,
+    edit(photo) {
+      editingPhoto = photo;
+      $('photo-caption-input').value = photo.caption;
+      $('photo-caption-status').textContent = '';
+      $('photo-caption-dialog').showModal();
+      $('photo-caption-input').focus();
+    },
     install() {
       if (window.BirthdayCloud.offline) return;
       const input = $('photo-input');
       input.accept = 'image/*';
       input.onchange = event => upload([...event.target.files].map(file => ({file,id:crypto.randomUUID()})));
       $('photo-upload-retry').onclick = () => upload([...failed]);
+      $('photo-caption-close').onclick = () => $('photo-caption-dialog').close();
+      $('photo-caption-form').onsubmit = async event => {
+        event.preventDefault();
+        const photo = editingPhoto;
+        const button = $('photo-caption-save');
+        button.disabled = true;
+        $('photo-caption-status').textContent = '正在保存这段回忆…';
+        try {
+          await window.BirthdayCloud.caption(photo.id, $('photo-caption-input').value);
+          if (editingPhoto === photo) $('photo-caption-dialog').close();
+        } catch (error) {
+          $('photo-caption-status').textContent = error.message || '保存失败，文字还在，可以重试。';
+        } finally { button.disabled = false; }
+      };
       capacity();
     },
   };
